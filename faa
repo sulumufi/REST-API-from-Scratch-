@@ -1,0 +1,197 @@
+[33mcommit 36af9d8e0d7d86f681dfaec3d83f21ffd7d4009d[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m
+Author: sulu mufi <suluksm@gmail.com>
+Date:   Sat Jul 24 19:46:46 2021 +0530
+
+    adding: GET, POST, PUT PATHC DELETE
+
+[1mdiff --git a/app.js b/app.js[m
+[1mindex b41635a..fe3c9fb 100644[m
+[1m--- a/app.js[m
+[1m+++ b/app.js[m
+[36m@@ -4,14 +4,14 @@[m [mconst ejs = require("ejs");[m
+ const mongoose = require('mongoose');[m
+ [m
+ url = "mongodb://localhost:27017/wikiDB";[m
+[31m-mongoose.connect(url,{[m
+[32m+[m[32mmongoose.connect(url, {[m
+     useNewUrlParser: true,[m
+     useUnifiedTopology: true[m
+ });[m
+ [m
+ const articleSchema = mongoose.Schema({[m
+[31m-    title : String,[m
+[31m-    content : String[m
+[32m+[m[32m    title: String,[m
+[32m+[m[32m    content: String[m
+ });[m
+ [m
+ const Article = mongoose.model("Article", articleSchema);[m
+[36m@@ -22,68 +22,117 @@[m [mconst app = express();[m
+ app.set('view engine', 'ejs');[m
+ [m
+ app.use(bodyParser.urlencoded({[m
+[31m-  extended: true[m
+[32m+[m[32m    extended: true[m
+ }));[m
+ app.use(express.static("public"));[m
+ [m
+ [m
+[31m-app.route("/articles").get(function(req, res){[m
+[32m+[m[32mapp.route("/articles")[m
+[32m+[m[32m    .get(function (req, res) {[m
+ [m
+[31m-    Article.find(function(err, articles_found){[m
+[31m-        if(!err){[m
+[31m-            res.send(articles_found);[m
+[31m-        }[m
+[31m-        else{[m
+[31m-            res.send(err);[m
+[31m-        }[m
+[32m+[m[32m        Article.find(function (err, articles_found) {[m
+[32m+[m[32m            if (!err) {[m
+[32m+[m[32m                res.send(articles_found);[m
+[32m+[m[32m            } else {[m
+[32m+[m[32m                res.send(err);[m
+[32m+[m[32m            }[m
+[32m+[m[32m        })[m
+     })[m
+[31m-}).post(function(req,res){[m
+[31m-    console.log(req.body.title);[m
+[31m-    console.log(req.body.content); [m
+[32m+[m[32m    .post(function (req, res) {[m
+[32m+[m[32m        console.log(req.body.title);[m
+[32m+[m[32m        console.log(req.body.content);[m
+[32m+[m
+[32m+[m[32m        const title_recieved = req.body.title;[m
+[32m+[m[32m        const content_recieved = req.body.content;[m
+[32m+[m
+[32m+[m[32m        const article = Article({[m
+[32m+[m[32m            title: title_recieved,[m
+[32m+[m[32m            content: content_recieved[m
+[32m+[m[32m        });[m
+[32m+[m
+[32m+[m[32m        article.save(function (err) {[m
+[32m+[m[32m            if (err) {[m
+[32m+[m[32m                rer.send(err);[m
+[32m+[m[32m            } else {[m
+[32m+[m[32m                res.send("successfully added articles");[m
+[32m+[m[32m            }[m
+[32m+[m[32m        });[m
+ [m
+[31m-    const title_recieved = req.body.title;[m
+[31m-    const content_recieved = req.body.content;[m
+[31m-[m
+[31m-    const article = Article({[m
+[31m-        title : title_recieved,[m
+[31m-        content : content_recieved[m
+[32m+[m[32m    })[m
+[32m+[m[32m    .delete(function (req, res) {[m
+[32m+[m[32m        Article.deleteMany(function (err) {[m
+[32m+[m[32m            if (!err) {[m
+[32m+[m[32m                res.send("Successfully deleted all articles");[m
+[32m+[m[32m            } else {[m
+[32m+[m[32m                res.send(err);[m
+[32m+[m[32m            }[m
+[32m+[m[32m        })[m
+     });[m
+ [m
+[31m-    article.save(function(err){[m
+[31m-        if(err){[m
+[31m-            rer.send(err);[m
+[31m-        }[m
+[31m-        else{[m
+[31m-            res.send("successfully added articles");[m
+[31m-        }[m
+[31m-    });[m
+ [m
+[31m-}).delete(function(req, res){[m
+ [m
+[31m-    Article.deleteMany(function(err){[m
+[31m-        if(!err){[m
+[31m-            res.send("Successfully deleted all articles");[m
+[31m-        }[m
+[31m-        else{[m
+[31m-            res.send(err);[m
+[31m-        }[m
+[32m+[m[32mapp.route("/articles/:atricleTitle")[m
+[32m+[m[32m    .get(function (req, res) {[m
+[32m+[m[32m        Article.findOne({[m
+[32m+[m[32m            title: req.params.atricleTitle[m
+[32m+[m[32m        }, function (err, itemFound) {[m
+[32m+[m[32m            if (!err) {[m
+[32m+[m[32m                res.send(itemFound);[m
+[32m+[m[32m            } else {[m
+[32m+[m[32m                res.send(err);[m
+[32m+[m[32m            }[m
+[32m+[m[32m        })[m
+[32m+[m[32m    })[m
+[32m+[m[32m    .put(function (req, res) {[m
+[32m+[m[32m        console.log("--------------herhe!");[m
+[32m+[m[32m        Article.update({[m
+[32m+[m[32m                title: req.params.atricleTitle[m
+[32m+[m[32m            }, {[m
+[32m+[m[32m                title: req.body.title[m
+[32m+[m[32m            }, {[m
+[32m+[m[32m                overwrite: true[m
+[32m+[m[32m            },[m
+[32m+[m[32m            function (err) {[m
+[32m+[m[32m                if (!err) {[m
+[32m+[m[32m                    console.log("success");[m
+[32m+[m[32m                    res.send("success!")[m
+[32m+[m[32m                } else {[m
+[32m+[m[32m                    console.log(err);[m
+[32m+[m[32m                    res.send(err);[m
+[32m+[m[32m                }[m
+[32m+[m[32m            })[m
+     })[m
+[31m-});[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-app.get("/articles", );[m
+[31m-[m
+[31m-app.post("/articles", );[m
+[31m-[m
+[31m-app.delete("/articles", );[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-[m
+ [m
+[32m+[m[32m    .patch(function(req, res){[m
+[32m+[m
+[32m+[m[32m        Article.update({[m
+[32m+[m[32m            title : req.params.atricleTitle[m
+[32m+[m[32m        },[m
+[32m+[m[32m        {[m
+[32m+[m[32m            $set: req.body[m
+[32m+[m[32m        },[m
+[32m+[m[32m        function(err){[m
+[32m+[m[32m            if(!err){[m
+[32m+[m[32m                res.send("Success");[m
+[32m+[m[32m            }[m
+[32m+[m[32m            else{[m
+[32m+[m[32m                res.send(err);[m
+[32m+[m[32m            }[m
+[32m+[m[32m        })[m
+[32m+[m[32m    })[m
+[32m+[m[41m    [m
+[32m+[m[32m    .delete(function(req, res){[m
+[32m+[m[32m        Article.deleteOne({title : req.params.atricleTitle}, function(err){[m
+[32m+[m[32m            if(!err){[m
+[32m+[m[32m                res.send("Delete Successful");[m
+[32m+[m[32m            }[m
+[32m+[m[32m            else{[m
+[32m+[m[32m                res.send(err);[m
+[32m+[m[32m            }[m
+[32m+[m[32m        })[m
+[32m+[m[32m    });[m
+ [m
+[31m-app.listen(3000, function() {[m
+[31m-  console.log("Server started on port 3000");[m
+[32m+[m[41m    [m
+[32m+[m[32mapp.listen(3000, function () {[m
+[32m+[m[32m    console.log("Server started on port 3000");[m
+ });[m
+\ No newline at end of file[m

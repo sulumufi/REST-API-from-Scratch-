@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require('mongoose');
 
-url = "mongodb://localhost:27017/wikiDB";
+url = "mongodb+srv://admin:admin@cluster0.bibps.mongodb.net/wikiDB";
 mongoose.connect(url, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -84,7 +84,6 @@ app.route("/articles/:atricleTitle")
         })
     })
     .put(function (req, res) {
-        console.log("--------------herhe!");
         Article.update({
                 title: req.params.atricleTitle
             }, {
@@ -122,7 +121,7 @@ app.route("/articles/:atricleTitle")
     })
     
     .delete(function(req, res){
-        Article.deleteOne({title : req.params.atricleTitle}, function(err){
+        Article.deleteOne({title :req.params.atricleTitle}, function(err){
             if(!err){
                 res.send("Delete Successful");
             }
@@ -132,7 +131,7 @@ app.route("/articles/:atricleTitle")
         })
     });
 
-    
+
 app.listen(3000, function () {
     console.log("Server started on port 3000");
 });
